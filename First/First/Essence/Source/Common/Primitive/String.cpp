@@ -140,6 +140,13 @@ int CString::Length() const {
 }
 
 /**
+* ƒ^ƒCƒv‚ÌŽæ“¾
+*/
+EType CString::Type() {
+	return EType::String;
+}
+
+/**
 * “™‚µ‚¢‚©‚Ì”»’f
 */
 bool CString::operator == (unitType* value) {

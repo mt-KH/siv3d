@@ -43,6 +43,11 @@ public:
 	* 値の取得
 	*/
 	unitType* Value()const;
+
+	/**
+	* タイプの取得
+	*/
+	EType Type()override;
 public:
 	/**
 	* オペレーターのオーバーロード
