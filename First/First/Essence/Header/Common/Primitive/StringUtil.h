@@ -9,7 +9,6 @@ class CStringUtil
 public:
 	CStringUtil() = delete;
 	CStringUtil(const CStringUtil&) = delete;
-	CStringUtil(CStringUtil&) = delete;
 	CStringUtil(CStringUtil&&) = delete;
 	~CStringUtil() = default;
 
@@ -45,5 +44,7 @@ public:
 	*/
 	static CString Concatenation(const CString&, const CString&);
 };
+
+
 }}}
 #endif

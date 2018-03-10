@@ -18,49 +18,21 @@ CString::CString() :
 
 }
 CString::CString(const CString& value) :
-	m_size(CStringUtil::Length( value )) {
+	m_size(NULL) {
 
-	m_value = new unitType[m_size + 1];
-#if _UNICODE
-	swprintf(m_value, m_size + 1, L"%s", value.m_value);
-#else
-	snprintf(m_value, m_size + 1, "%s", value.m_value);
-#endif
-
-}
-
-CString::CString(CString&& value) noexcept :
-	m_size(CStringUtil::Length( m_value ) ) {
-
-	m_value = new unitType[m_size + 1];
-#if _UNICODE
-	swprintf(m_value, m_size + 1, L"%s", value.m_value);
-#else
-	snprintf(m_value, m_size + 1, "%s", value.m_value);
-#endif
+	*this = value.m_value;
 }
 
 CString::CString(unitType* value) :
-	m_size(CStringUtil::Length( value )) {
-
-	m_value = new unitType[m_size + 1];
-#if _UNICODE
-	swprintf(m_value, m_size + 1, L"%s", value);
-#else
-	snprintf(m_value, m_size + 1, "%s", value);
-#endif
+	m_size(NULL) {
+	*this = value;
 }
 
-CString::CString(CString& value) :
-	m_size(CStringUtil::Length( value )) {
-
-	m_value = new unitType[m_size + 1];
-#if _UNICODE
-	swprintf(m_value, m_size + 1, L"%s", value.m_value);
-#else
-	snprintf(m_value, m_size + 1, "%s", value.m_value);
-#endif
+CString::CString(CString&& value) noexcept :
+	m_size(NULL) {
+	*this = value;
 }
+
 
 CString::~CString()
 {

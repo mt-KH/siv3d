@@ -27,9 +27,9 @@ CString CStringUtil::Replace(const CString& refStr, const CString& oldStr, const
 		CString::unitType* temp = new CString::unitType[size];
 
 #if _UNICODE
-		swprintf(temp, size + 1, L"%s%s%s", refStr.Value(), newStr.Value(), tailStr);
+		swprintf(temp, size, L"%s%s%s", refStr.Value(), newStr.Value(), tailStr);
 #else
-		snprintf(temp, size + 1, "%s%s%s", refStr.Value(), newStr.Value(), tailStr);
+		snprintf(temp, size, "%s%s%s", refStr.Value(), newStr.Value(), tailStr);
 #endif
 
 		return Replace(temp, oldStr, newStr);

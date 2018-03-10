@@ -2,8 +2,8 @@
 #define ESSENCE_COMMON_PRIMITIVE_STRING_H
 #include "Base\IPrimitive.h"
 
-namespace essence {
-	namespace primitive {
+namespace essence { namespace primitive {
+
 class CString : public IPrimitive
 {
 
@@ -19,9 +19,8 @@ public:
 public:
 	CString();
 	CString( const CString& );
+	CString(unitType*);
 	CString( CString&& ) noexcept;
-	CString( unitType* );
-	CString( CString& );
 	~CString();
 
 
@@ -100,5 +99,6 @@ private:
 	unitType* m_value;
 	int m_size;
 };
+
 }}
 #endif
