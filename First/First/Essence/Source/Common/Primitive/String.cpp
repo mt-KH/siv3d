@@ -1,50 +1,16 @@
 #include "../../../Header/Common/Primitive/String.h"
+#include "../../../Header/Common/Primitive/StringUtil.h"
 #include <string.h>
 #include <stdio.h>
-using namespace essence;
-using namespace primitve;
 
-namespace {
-
-	int GetStringLength(const CString::unitType* value) {
-#if _UNICODE
-		return wcslen(value);
-#else
-		return strlen(value);
-#endif
-	}
-
-	/**
-	* CString::Substring‚ÌŽÀ‘Ô
-	*/
-	CString ReplaceImpl(CString::unitType* value, CString::unitType* oldStr, CString::unitType* newStr) {
-
-		CString::unitType* p = value;
-#if _UNICODE
-		p = wcsstr(value, oldStr);
-#else
-		p = strstr(value, oldStr);
-#endif
-
-		if (p != nullptr) {
-
-			*p = '\0';
-			auto tailStr = p + GetStringLength(oldStr);
-			int size = GetStringLength(value) + GetStringLength(newStr) + GetStringLength(tailStr) + 1;
-			CString::unitType* temp = new CString::unitType[size];
+using namespace essence::primitive;
+using namespace essence::primitive::utility;
 
 #if _UNICODE
-			swprintf(temp, size + 1, L"%s%s%s", value, newStr, tailStr);
+const CString CString::Empty = L"";
 #else
-			snprintf(temp, size + 1, "%s%s%s", value, newStr, tailStr);
+const CString CString::Empty = "";
 #endif
-
-			return ReplaceImpl(temp, oldStr, newStr);
-		}
-
-		return value;
-	}
-}
 
 CString::CString() :
 	m_value(nullptr),
@@ -52,7 +18,7 @@ CString::CString() :
 
 }
 CString::CString(const CString& value) :
-	m_size(GetStringLength( value.m_value )) {
+	m_size(CStringUtil::Length( value )) {
 
 	m_value = new unitType[m_size + 1];
 #if _UNICODE
@@ -64,7 +30,7 @@ CString::CString(const CString& value) :
 }
 
 CString::CString(CString&& value) noexcept :
-	m_size( GetStringLength( m_value ) ) {
+	m_size(CStringUtil::Length( m_value ) ) {
 
 	m_value = new unitType[m_size + 1];
 #if _UNICODE
@@ -75,7 +41,7 @@ CString::CString(CString&& value) noexcept :
 }
 
 CString::CString(unitType* value) :
-	m_size(GetStringLength(value)) {
+	m_size(CStringUtil::Length( value )) {
 
 	m_value = new unitType[m_size + 1];
 #if _UNICODE
@@ -86,7 +52,7 @@ CString::CString(unitType* value) :
 }
 
 CString::CString(CString& value) :
-	m_size(GetStringLength(value.m_value)) {
+	m_size(CStringUtil::Length( value )) {
 
 	m_value = new unitType[m_size + 1];
 #if _UNICODE
@@ -109,7 +75,7 @@ CString CString::Replace(const CString& oldStr, const CString& newStr) {
 	if (oldStr.m_value == nullptr)
 		return *this;
 
-	return ReplaceImpl(m_value, oldStr.m_value, newStr.m_value);
+	return CStringUtil::Replace(*this, oldStr.m_value, newStr.m_value);
 }
 
 /**
@@ -121,11 +87,7 @@ CString CString::Substring(const CString& value) {
 	if (value.m_value == nullptr)
 		return *this;
 
-#if _UNICODE
-	return ReplaceImpl(m_value, value.m_value, L"");
-#else
-	return ReplaceImpl(m_value, value.m_value, "");
-#endif
+	return CStringUtil::Substring(*this, value);
 }
 
 CString::unitType* CString::Value() const{
@@ -150,19 +112,11 @@ EType CString::Type() {
 * “™‚µ‚¢‚©‚Ì”»’f
 */
 bool CString::operator == (unitType* value) {
-#if _UNICODE
-	return (wcscmp(m_value, value) == 0);
-#else
-	return (strcmp(m_value, value) == 0);
-#endif
+	return CStringUtil::Equal(*this, value);
 }
 
 bool CString::operator == (CString& value) {
-#if _UNICODE
-	return (wcscmp(m_value, value.m_value) == 0);
-#else
-	return (strcmp(m_value, value.m_value) == 0);
-#endif
+	return CStringUtil::Equal(*this, value);
 }
 
 /**
@@ -170,29 +124,21 @@ bool CString::operator == (CString& value) {
 */
 
 bool CString::operator != (unitType* value) {
-	return !(*this == value);
+	return CStringUtil::NotEqual(*this, value);
 }
 
 bool CString::operator != (CString& value) {
-	return !(*this == value);
+	return CStringUtil::NotEqual(*this, value);
 }
 
 /**
 * ˜AŒ‹‘ã“ü
 */
 CString& CString::operator += (unitType* value) {
-	m_size = (GetStringLength(value) + m_size);
-	unitType* temp = new unitType[m_size + 1];
-	memset(temp, 0, sizeof(unitType) * m_size + 1);
-
-#if _UNICODE
-	swprintf(temp, m_size + 1, L"%s%s", m_value, value);
-#else
-	snprintf(temp, m_size + 1, "%s%s", m_value, value);
-#endif
+	CString temp = CStringUtil::Concatenation(*this, value);
 	delete m_value;
 
-	this->m_value = temp;
+	*this = temp;
 	return *this;
 }
 
@@ -206,20 +152,12 @@ CString& CString::operator += ( CString& value ) {
 * ˜AŒ‹
 */
 CString CString::operator + (unitType* value) {
-	int size = (GetStringLength(value) + m_size);
-	unitType* temp = new unitType[size + 1];
-	memset(temp, 0, sizeof(unitType) * size + 1);
 
-#if _UNICODE
-	swprintf(temp, size + 1, L"%s%s", m_value, value);
-#else
-	snprintf(temp, size + 1, "%s%s", m_value, value);
-#endif
-	return temp;
+	return CStringUtil::Concatenation(*this, value);
 }
 
 CString CString::operator + (CString& value) {
-	return *this + value.m_value;
+	return CStringUtil::Concatenation(*this, value);
 }
 
 /**
@@ -229,9 +167,9 @@ CString& CString::operator = (unitType* value) {
 	if (m_value != nullptr) {
 		delete m_value;
 	}
-	m_size = GetStringLength(value);
-	m_value = new unitType[m_size + 1];
 
+	m_size = CStringUtil::Length(value);
+	m_value = new unitType[m_size + 1];
 #if _UNICODE
 	swprintf(m_value, m_size + 1, L"%s", value);
 #else

@@ -2,7 +2,7 @@
 #define DEF_ESSENCE_IPRIMITIVE_H
 
 namespace essence {
-	namespace primitve{
+	namespace primitive {
 
 /// プリミティブタイプの列挙
 enum class EType {

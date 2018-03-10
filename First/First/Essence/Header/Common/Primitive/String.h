@@ -3,7 +3,7 @@
 #include "Base\IPrimitive.h"
 
 namespace essence {
-	namespace primitve {
+	namespace primitive {
 class CString : public IPrimitive
 {
 
@@ -14,7 +14,8 @@ public:
 	typedef char unitType;
 #endif
 
-
+public:
+	static const CString Empty;
 public:
 	CString();
 	CString( const CString& );
@@ -22,6 +23,7 @@ public:
 	CString( unitType* );
 	CString( CString& );
 	~CString();
+
 
 	/**
 	* 第一引数の文字列を第二引数の文字列に置き換えた文字列を返す。
@@ -48,6 +50,8 @@ public:
 	* タイプの取得
 	*/
 	EType Type()override;
+
+
 public:
 	/**
 	* オペレーターのオーバーロード
