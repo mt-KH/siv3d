@@ -5,22 +5,39 @@ using namespace essence;
 using namespace primitve;
 
 namespace {
+
+	int GetStringLength(const CString::unitType* value) {
+#if _UNICODE
+		return wcslen(value);
+#else
+		return strlen(value);
+#endif
+	}
+
 	/**
 	* CString::Substring‚ÌŽÀ‘Ô
 	*/
-	CString ReplaceImpl(char* value, char* oldStr,char* newStr) {
+	CString ReplaceImpl(CString::unitType* value, CString::unitType* oldStr, CString::unitType* newStr) {
 
-		char* p = value;
-
+		CString::unitType* p = value;
+#if _UNICODE
+		p = wcsstr(value, oldStr);
+#else
 		p = strstr(value, oldStr);
+#endif
 
 		if (p != nullptr) {
 
 			*p = '\0';
-			auto tailStr = p + strlen(oldStr);
-			int size = strlen(value) + strlen(newStr) + strlen(tailStr) + 1;
-			char* temp = new char[size];
-			snprintf(temp, size, "%s%s%s", value, newStr, tailStr);
+			auto tailStr = p + GetStringLength(oldStr);
+			int size = GetStringLength(value) + GetStringLength(newStr) + GetStringLength(tailStr) + 1;
+			CString::unitType* temp = new CString::unitType[size];
+
+#if _UNICODE
+			swprintf(temp, size + 1, L"%s%s%s", value, newStr, tailStr);
+#else
+			snprintf(temp, size + 1, "%s%s%s", value, newStr, tailStr);
+#endif
 
 			return ReplaceImpl(temp, oldStr, newStr);
 		}
@@ -35,32 +52,48 @@ CString::CString() :
 
 }
 CString::CString(const CString& value) :
-	m_size( strlen( value.m_value )) {
+	m_size(GetStringLength( value.m_value )) {
 
-	m_value = new char[m_size + 1];
+	m_value = new unitType[m_size + 1];
+#if _UNICODE
+	swprintf(m_value, m_size + 1, L"%s", value.m_value);
+#else
 	snprintf(m_value, m_size + 1, "%s", value.m_value);
+#endif
 
 }
 
 CString::CString(CString&& value) noexcept :
-	m_size( strlen( m_value ) ) {
+	m_size( GetStringLength( m_value ) ) {
 
-	m_value = new char[m_size + 1];
+	m_value = new unitType[m_size + 1];
+#if _UNICODE
+	swprintf(m_value, m_size + 1, L"%s", value.m_value);
+#else
 	snprintf(m_value, m_size + 1, "%s", value.m_value);
+#endif
 }
 
-CString::CString(char* value) :
-	m_size(strlen(value)) {
+CString::CString(unitType* value) :
+	m_size(GetStringLength(value)) {
 
-	m_value = new char[m_size + 1];
+	m_value = new unitType[m_size + 1];
+#if _UNICODE
+	swprintf(m_value, m_size + 1, L"%s", value);
+#else
 	snprintf(m_value, m_size + 1, "%s", value);
+#endif
 }
 
 CString::CString(CString& value) :
-	m_size(strlen(value.m_value)) {
+	m_size(GetStringLength(value.m_value)) {
 
-	m_value = new char[m_size + 1];
+	m_value = new unitType[m_size + 1];
+#if _UNICODE
+	swprintf(m_value, m_size + 1, L"%s", value.m_value);
+#else
 	snprintf(m_value, m_size + 1, "%s", value.m_value);
+#endif
 }
 
 CString::~CString()
@@ -88,10 +121,14 @@ CString CString::Substring(const CString& value) {
 	if (value.m_value == nullptr)
 		return *this;
 
+#if _UNICODE
+	return ReplaceImpl(m_value, value.m_value, L"");
+#else
 	return ReplaceImpl(m_value, value.m_value, "");
+#endif
 }
 
-char* CString::GetValue() const{
+CString::unitType* CString::Value() const{
 	return m_value;
 }
 
@@ -105,19 +142,27 @@ int CString::Length() const {
 /**
 * “™‚µ‚¢‚©‚Ì”»’f
 */
-bool CString::operator == (char* value) {
+bool CString::operator == (unitType* value) {
+#if _UNICODE
+	return (wcscmp(m_value, value) == 0);
+#else
 	return (strcmp(m_value, value) == 0);
+#endif
 }
 
 bool CString::operator == (CString& value) {
+#if _UNICODE
+	return (wcscmp(m_value, value.m_value) == 0);
+#else
 	return (strcmp(m_value, value.m_value) == 0);
+#endif
 }
 
 /**
 * “™‚µ‚­‚È‚¢‚©‚Ì”»’f
 */
 
-bool CString::operator != (char* value) {
+bool CString::operator != (unitType* value) {
 	return !(*this == value);
 }
 
@@ -128,12 +173,16 @@ bool CString::operator != (CString& value) {
 /**
 * ˜AŒ‹‘ã“ü
 */
-CString& CString::operator += (char* value) {
-	m_size = (strlen(value) + m_size);
-	char* temp = new char[m_size + 1];
-	memset(temp, 0, sizeof(char) * m_size + 1);
+CString& CString::operator += (unitType* value) {
+	m_size = (GetStringLength(value) + m_size);
+	unitType* temp = new unitType[m_size + 1];
+	memset(temp, 0, sizeof(unitType) * m_size + 1);
 
+#if _UNICODE
+	swprintf(temp, m_size + 1, L"%s%s", m_value, value);
+#else
 	snprintf(temp, m_size + 1, "%s%s", m_value, value);
+#endif
 	delete m_value;
 
 	this->m_value = temp;
@@ -149,12 +198,16 @@ CString& CString::operator += ( CString& value ) {
 /**
 * ˜AŒ‹
 */
-CString CString::operator + (char* value) {
-	int size = (strlen(value) + m_size);
-	char* temp = new char[size + 1];
-	memset(temp, 0, sizeof(char) * size + 1);
+CString CString::operator + (unitType* value) {
+	int size = (GetStringLength(value) + m_size);
+	unitType* temp = new unitType[size + 1];
+	memset(temp, 0, sizeof(unitType) * size + 1);
 
+#if _UNICODE
+	swprintf(temp, size + 1, L"%s%s", m_value, value);
+#else
 	snprintf(temp, size + 1, "%s%s", m_value, value);
+#endif
 	return temp;
 }
 
@@ -165,13 +218,19 @@ CString CString::operator + (CString& value) {
 /**
 * ‘ã“ü
 */
-CString& CString::operator = (char* value) {
+CString& CString::operator = (unitType* value) {
 	if (m_value != nullptr) {
 		delete m_value;
 	}
-	m_size = strlen(value);
-	m_value = new char[m_size + 1];
+	m_size = GetStringLength(value);
+	m_value = new unitType[m_size + 1];
+
+#if _UNICODE
+	swprintf(m_value, m_size + 1, L"%s", value);
+#else
 	snprintf(m_value, m_size + 1, "%s", value);
+#endif
+
 	return *this;
 }
 

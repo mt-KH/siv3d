@@ -6,11 +6,20 @@ namespace essence {
 	namespace primitve {
 class CString : public IPrimitive
 {
+
+public:
+#if _UNICODE
+	typedef wchar_t unitType;
+#else
+	typedef char unitType;
+#endif
+
+
 public:
 	CString();
 	CString( const CString& );
 	CString( CString&& ) noexcept;
-	CString( char* );
+	CString( unitType* );
 	CString( CString& );
 	~CString();
 
@@ -33,7 +42,7 @@ public:
 	/**
 	* 値の取得
 	*/
-	char* GetValue()const;
+	unitType* Value()const;
 public:
 	/**
 	* オペレーターのオーバーロード
@@ -42,12 +51,12 @@ public:
 	/**
 	* 引数の文字列との等しいか比較
 	*/
-	bool operator == (char*);
+	bool operator == (unitType*);
 
 	/**
 	* 引数の文字列との等しくないか比較
 	*/
-	bool operator != (char*);
+	bool operator != (unitType*);
 
 	/**
 	* 引数の文字列との等しくないか比較
@@ -62,7 +71,7 @@ public:
 	/**
 	* 代入
 	*/
-	CString& operator = (char*);
+	CString& operator = (unitType*);
 
 	/**
 	* 代入
@@ -73,13 +82,13 @@ public:
 	/**
 	* 文字列の連結
 	*/
-	CString& operator += (char*);
+	CString& operator += (unitType*);
 	CString& operator += (CString&);
-	CString operator + (char*);
+	CString operator + (unitType*);
 	CString operator + (CString&);
 
 private:
-	char* m_value;
+	unitType* m_value;
 	int m_size;
 };
 }}
