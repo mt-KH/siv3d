@@ -1,4 +1,4 @@
-#include "String.h"
+#include "../../../Header/Common/Primitive/String.h"
 #include <string.h>
 #include <stdio.h>
 using namespace essence;
@@ -18,8 +18,9 @@ namespace {
 
 			*p = '\0';
 			auto tailStr = p + strlen(oldStr);
-			char* temp = new char[strlen(value) + strlen(newStr)+ strlen(tailStr) + 1];
-			sprintf(temp, "%s%s%s", value, newStr, tailStr);
+			int size = strlen(value) + strlen(newStr) + strlen(tailStr) + 1;
+			char* temp = new char[size];
+			snprintf(temp, size, "%s%s%s", value, newStr, tailStr);
 
 			return ReplaceImpl(temp, oldStr, newStr);
 		}
@@ -37,7 +38,7 @@ CString::CString(const CString& value) :
 	m_size( strlen( value.m_value )) {
 
 	m_value = new char[m_size + 1];
-	sprintf(m_value, "%s", value.m_value);
+	snprintf(m_value, m_size + 1, "%s", value.m_value);
 
 }
 
@@ -45,21 +46,21 @@ CString::CString(CString&& value) noexcept :
 	m_size( strlen( m_value ) ) {
 
 	m_value = new char[m_size + 1];
-	sprintf(m_value, "%s", value);
+	snprintf(m_value, m_size + 1, "%s", value.m_value);
 }
 
 CString::CString(char* value) :
 	m_size(strlen(value)) {
 
 	m_value = new char[m_size + 1];
-	sprintf(m_value, "%s", value);
+	snprintf(m_value, m_size + 1, "%s", value);
 }
 
 CString::CString(CString& value) :
 	m_size(strlen(value.m_value)) {
 
 	m_value = new char[m_size + 1];
-	sprintf(m_value, "%s", value.m_value);
+	snprintf(m_value, m_size + 1, "%s", value.m_value);
 }
 
 CString::~CString()
@@ -132,7 +133,7 @@ CString& CString::operator += (char* value) {
 	char* temp = new char[m_size + 1];
 	memset(temp, 0, sizeof(char) * m_size + 1);
 
-	sprintf(temp, "%s%s", m_value, value);
+	snprintf(temp, m_size + 1, "%s%s", m_value, value);
 	delete m_value;
 
 	this->m_value = temp;
@@ -153,7 +154,7 @@ CString CString::operator + (char* value) {
 	char* temp = new char[size + 1];
 	memset(temp, 0, sizeof(char) * size + 1);
 
-	sprintf(temp, "%s%s", m_value, value);
+	snprintf(temp, size + 1, "%s%s", m_value, value);
 	return temp;
 }
 
@@ -170,7 +171,7 @@ CString& CString::operator = (char* value) {
 	}
 	m_size = strlen(value);
 	m_value = new char[m_size + 1];
-	sprintf(m_value, "%s", value);
+	snprintf(m_value, m_size + 1, "%s", value);
 	return *this;
 }
 

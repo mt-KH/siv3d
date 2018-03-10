@@ -1,6 +1,6 @@
-
-#pragma once
-#include "IPrimitive.h"
+#ifndef ESSENCE_COMMON_PRIMITIVE_STRING_H
+#define ESSENCE_COMMON_PRIMITIVE_STRING_H
+#include "Base\IPrimitive.h"
 
 namespace essence {
 	namespace primitve {
@@ -83,5 +83,4 @@ private:
 	int m_size;
 };
 }}
-
-
+#endif
