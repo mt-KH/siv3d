@@ -57,7 +57,7 @@ int CStringUtil::Length(const CString& refStr) {
 #if _UNICODE
 	return wcslen(refStr.Value());
 #else
-	return strlen(value.Value());
+	return strlen(refStr.Value());
 #endif
 }
 

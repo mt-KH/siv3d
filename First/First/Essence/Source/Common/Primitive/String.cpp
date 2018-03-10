@@ -6,6 +6,19 @@
 using namespace essence::primitive;
 using namespace essence::primitive::utility;
 
+namespace {
+	/**
+	* ï∂éöóÒÇÃí∑Ç≥Çï‘ÇµÇ‹Ç∑ÅB
+	*/
+	int GetLength(CString::unitType* val){
+#if _UNICODE
+		return wcslen(val);
+#else
+		return strlen(val);
+#endif
+	}
+}
+
 #if _UNICODE
 const CString CString::Empty = L"";
 #else
@@ -13,24 +26,20 @@ const CString CString::Empty = "";
 #endif
 
 CString::CString() :
-	m_value(nullptr),
-	m_size(0){
+	m_value(nullptr){
 
 }
-CString::CString(const CString& value) :
-	m_size(NULL) {
+CString::CString(const CString& value) {
 
 	*this = value.m_value;
 }
 
-CString::CString(unitType* value) :
-	m_size(NULL) {
+CString::CString(unitType* value){
 	*this = value;
 }
 
-CString::CString(CString&& value) noexcept :
-	m_size(NULL) {
-	*this = value;
+CString::CString(CString&& value) noexcept {
+	*this = value.m_value;
 }
 
 
@@ -47,7 +56,7 @@ CString CString::Replace(const CString& oldStr, const CString& newStr) {
 	if (oldStr.m_value == nullptr)
 		return *this;
 
-	return CStringUtil::Replace(*this, oldStr.m_value, newStr.m_value);
+	return CStringUtil::Replace(*this, oldStr, newStr);
 }
 
 /**
@@ -70,7 +79,7 @@ CString::unitType* CString::Value() const{
 * ï∂éöóÒÇÃí∑Ç≥
 */
 int CString::Length() const {
-	return m_size;
+	return GetLength(m_value);
 }
 
 /**
@@ -110,7 +119,7 @@ CString& CString::operator += (unitType* value) {
 	CString temp = CStringUtil::Concatenation(*this, value);
 	delete m_value;
 
-	*this = temp;
+	*this = temp.m_value;
 	return *this;
 }
 
@@ -136,23 +145,16 @@ CString CString::operator + (CString& value) {
 * ë„ì¸
 */
 CString& CString::operator = (unitType* value) {
-	if (m_value != nullptr) {
-		delete m_value;
-	}
+	delete m_value;
 
-	m_size = CStringUtil::Length(value);
-	m_value = new unitType[m_size + 1];
+	int size = GetLength(value);
+	m_value = new unitType[size + 1];
 #if _UNICODE
-	swprintf(m_value, m_size + 1, L"%s", value);
+	swprintf(m_value, size + 1, L"%s", value);
 #else
-	snprintf(m_value, m_size + 1, "%s", value);
+	snprintf(m_value, size + 1, "%s", value);
 #endif
 
-	return *this;
-}
-
-CString& CString::operator = (CString& value) {
-	*this = value.m_value;
 	return *this;
 }
 

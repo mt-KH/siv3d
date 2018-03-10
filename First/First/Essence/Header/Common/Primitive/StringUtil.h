@@ -9,6 +9,7 @@ class CStringUtil
 public:
 	CStringUtil() = delete;
 	CStringUtil(const CStringUtil&) = delete;
+	CStringUtil(CStringUtil&) = delete;
 	CStringUtil(CStringUtil&&) = delete;
 	~CStringUtil() = default;
 
@@ -25,11 +26,6 @@ public:
 	static CString Substring(const CString&, const CString&);
 
 	/**
-	* 引数の文字列の長さを返す
-	*/
-	static int Length(const CString&);
-
-	/**
 	* 文字列が等しいかの比較
 	*/
 	static bool Equal(const CString&, const CString&);
@@ -43,8 +39,11 @@ public:
 	* 文字列の連結を行います
 	*/
 	static CString Concatenation(const CString&, const CString&);
+
+	/**
+	* 文字列の連結を行います
+	*/
+	static int Length(const CString& refStr);
 };
-
-
 }}}
 #endif

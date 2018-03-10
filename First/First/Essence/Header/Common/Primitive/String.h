@@ -82,12 +82,6 @@ public:
 	CString& operator = (unitType*);
 
 	/**
-	* ‘ã“ü
-	*/
-	CString& operator = (CString&);
-
-
-	/**
 	* •¶Žš—ñ‚Ì˜AŒ‹
 	*/
 	CString& operator += (unitType*);
@@ -97,7 +91,6 @@ public:
 
 private:
 	unitType* m_value;
-	int m_size;
 };
 
 }}
