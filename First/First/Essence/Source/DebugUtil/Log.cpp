@@ -1,6 +1,6 @@
 #include "../../Header/DebugUtil/Log.h"
 #include "../../Header/Common/Primitive/String.h"
-#include <stdio.h>
+#include <iostream>
 using namespace essence::debug;
 using namespace essence::primitive;
 /**
@@ -16,7 +16,7 @@ void CLog::Out(essence::primitive::IPrimitive* arg, EDestination outDestination)
 	switch (arg->Type())
 	{
 	case primitive::EType::String:
-		printf("%s", static_cast<CString*>(arg)->Value());
+		std::cout << static_cast<CString*>(arg)->Value() << std::endl;
 		break;
 
 	default:

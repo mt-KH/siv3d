@@ -50,6 +50,11 @@ public:
 	*/
 	EType Type()override;
 
+	/**
+	* ‹ó‚©NULL‚©‚ÌŠm”FŠÖ”
+	* ‹ó‚©NULL‚È‚çtrue‚ğ•Ô‚·
+	*/
+	bool CheckNullOrEmpty();
 
 public:
 	/**
@@ -60,21 +65,15 @@ public:
 	* ˆø”‚Ì•¶š—ñ‚Æ‚Ì“™‚µ‚¢‚©”äŠr
 	*/
 	bool operator == (unitType*);
+	bool operator == (CString&);
+	bool operator == (const CString&);
 
 	/**
 	* ˆø”‚Ì•¶š—ñ‚Æ‚Ì“™‚µ‚­‚È‚¢‚©”äŠr
 	*/
 	bool operator != (unitType*);
-
-	/**
-	* ˆø”‚Ì•¶š—ñ‚Æ‚Ì“™‚µ‚­‚È‚¢‚©”äŠr
-	*/
-	bool operator == (CString&);
-
-	/**
-	* ˆø”‚Ì•¶š—ñ‚Æ‚Ì“™‚µ‚­‚È‚¢‚©”äŠr
-	*/
 	bool operator != (CString&);
+	bool operator != (const CString&);
 
 	/**
 	* ‘ã“ü
@@ -92,6 +91,18 @@ public:
 private:
 	unitType* m_value;
 };
+
+/**
+* ˆø”‚Ì•¶š—ñ‚Æ‚Ì“™‚µ‚¢‚©”äŠr
+*/
+bool operator == (CString::unitType*, const CString&);
+bool operator == (CString::unitType*, CString&);
+
+/**
+* ˆø”‚Ì•¶š—ñ‚Æ‚Ì“™‚µ‚­‚È‚¢‚©”äŠr
+*/
+bool operator != (CString::unitType*, const CString&);
+bool operator != (CString::unitType* ,CString&);
 
 }}
 #endif

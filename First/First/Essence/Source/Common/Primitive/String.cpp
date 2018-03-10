@@ -38,6 +38,7 @@ CString::CString(unitType* value){
 	*this = value;
 }
 
+
 CString::CString(CString&& value) noexcept {
 	*this = value.m_value;
 }
@@ -89,6 +90,10 @@ EType CString::Type() {
 	return EType::String;
 }
 
+bool CString::CheckNullOrEmpty() {
+	return(m_value == nullptr || *this == Empty);
+}
+
 /**
 * “™‚µ‚¢‚©‚Ì”»’f
 */
@@ -98,6 +103,19 @@ bool CString::operator == (unitType* value) {
 
 bool CString::operator == (CString& value) {
 	return CStringUtil::Equal(*this, value);
+}
+
+bool CString::operator == (const CString& value) {
+	return CStringUtil::Equal(*this, value);
+}
+
+
+bool essence::primitive::operator == (CString::unitType* arg1,const CString& arg2) {
+	return CStringUtil::Equal(arg1, arg2);
+}
+
+bool essence::primitive::operator == (CString::unitType* arg1, CString& arg2) {
+	return CStringUtil::Equal(arg1, arg2);
 }
 
 /**
@@ -110,6 +128,19 @@ bool CString::operator != (unitType* value) {
 
 bool CString::operator != (CString& value) {
 	return CStringUtil::NotEqual(*this, value);
+}
+
+bool CString::operator != (const CString& value) {
+	return CStringUtil::NotEqual(*this, value);
+}
+
+bool essence::primitive::operator != (CString::unitType* arg1, const CString& arg2) {
+	return CStringUtil::NotEqual(arg1, arg2);
+}
+
+
+bool essence::primitive::operator != (CString::unitType* arg1, CString& arg2) {
+	return CStringUtil::NotEqual(arg1, arg2);
 }
 
 /**
