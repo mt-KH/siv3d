@@ -11,6 +11,10 @@ namespace {
 	* ï∂éöóÒÇÃí∑Ç≥Çï‘ÇµÇ‹Ç∑ÅB
 	*/
 	int GetLength(CString::unitType* val){
+
+		if (val == nullptr)
+			return 0;
+
 #if _UNICODE
 		return wcslen(val);
 #else
@@ -177,6 +181,11 @@ CString CString::operator + (CString& value) {
 */
 CString& CString::operator = (unitType* value) {
 	delete m_value;
+
+	if (value == nullptr) {
+		m_value = nullptr;
+		return;
+	}
 
 	int size = GetLength(value);
 	m_value = new unitType[size + 1];
