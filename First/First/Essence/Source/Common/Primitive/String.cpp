@@ -184,7 +184,7 @@ CString& CString::operator = (unitType* value) {
 
 	if (value == nullptr) {
 		m_value = nullptr;
-		return;
+		return *this;
 	}
 
 	int size = GetLength(value);
